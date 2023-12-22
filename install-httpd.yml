@@ -1,0 +1,34 @@
+--- 
+- name: Install the httpd, mysql and php packages
+  hosts: localhost
+  become: true 
+
+  tasks:
+  - name: Install HTTPD 
+    ansible.builtin.package:
+      name:
+        - httpd
+      state: present
+  - name: Enable and start the httpd server 
+    ansible.builtin.service:
+      name: httpd
+      state: started
+      enabled: true
+  - name: Enable Cockpit 
+    ansible.builtin.service:
+      name: cockpit.socket
+      state: started
+      enabled: true
+  - name: login to the google cloud 
+    ovirt.ovirt.ovirt_auth:
+      url: "{{ url }}"
+      insecure: true
+      username: "{{ username }}"
+      password: "{{ password }}"
+  - name: Feth users from the google cloud workspace 
+    ovirt.ovirt.ovirt_auth:
+      url: "{{ url }}"
+      insecure: true
+      username: "{{ username }}"
+      password: "{{ password }}"
+      state: present
